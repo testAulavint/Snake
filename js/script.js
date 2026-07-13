@@ -63,29 +63,39 @@ const gameLoop = () => {
   clearInterval(loopId);
 
   ctx.clearRect(0, 0, 600, 600); //apagar o quadro anterior
+  drawGrid();
   moveSnake();
   drawSnake();
 
   //criando o valor de loopÍd se caso declarar aqui o clearInterval vai cancelar ele antes de iniciar
   loopId = setTimeout(() => {
     gameLoop();
-  }, 100);
+  }, 70);
 };
 
 //Desenhar um grid
 const drawGrid = () => {
   ctx.lineWidth = 1; //largura da linha
 
-  ctx.strokeStyle = "white"; //estilo da linha (cor)
+  ctx.strokeStyle = "#191919"; //estilo da linha (cor)
 
-  ctx.lineTo(300, 0); //começo da llinha coordendas dadas em x,y
-  ctx.lineTo(300, 600); //final da linha x,y
+  for (let i = 30; i < canvas.width; i += 30) {
+    ctx.beginPath(); //começar um novo caminho a partir de top X
+    //for para preencher o grid de froma automica
+    ctx.lineTo(i, 0); //começo da linha coordendas dadas em x,y
+    ctx.lineTo(i, 600); //final da linha x,y
 
-  ctx.stroke();
+    ctx.stroke(); // metodo para desenhar em si
+
+    ctx.beginPath();
+    ctx.lineTo(0, i);
+    ctx.lineTo(600, i);
+    ctx.stroke();
+  }
 };
 
 drawGrid();
- gameLoop();
+gameLoop();
 
 //evento de teclado para jogar
 document.addEventListener("keydown", ({ key }) => {
