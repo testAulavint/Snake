@@ -85,7 +85,7 @@ const drawGrid = () => {
 };
 
 drawGrid();
-// gameLoop();
+ gameLoop();
 
 //evento de teclado para jogar
 document.addEventListener("keydown", ({ key }) => {
