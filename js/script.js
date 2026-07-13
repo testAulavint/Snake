@@ -1,5 +1,7 @@
 const canvas = document.querySelector("canvas");
 
+const h1 = document.querySelector("h1");
+
 //adicionando contexto ao canvas
 const ctx = canvas.getContext("2d");
 
@@ -12,6 +14,44 @@ const snake = [{ x: 0, y: 0 }];
 
 //armazenar direção que a cobra esta indo
 let direction, loopId;
+
+//gerar numero intero aleatorio
+const randoNumber = (min, max) => {
+  return Math.round(Math.random() * (max - min) + min);
+  //função para gerar número aleatorio
+  //a multiplicação adiciona o maximo e a adição o minimo
+};
+//gerar com aleatoria com a função de gerar numero aleatorio
+const colorRandon = () => {
+  const red = randoNumber(0, 255);
+  const green = randoNumber(0, 255);
+  const blue = randoNumber(0, 255);
+  return `rgb(${red},${green},${blue})`;
+};
+//Transformar o numero randon em multiplo de 30 para caber no grid
+const randoPosition = () => {
+  const number = randoNumber(0, canvas.width - size);
+  return Math.round(number / 30) * 30;
+};
+
+h1.innerHTML = colorRandon();
+
+//comida da cobra pode ser um objeto porque teremos somente uma por vez
+const food = {
+  x: randoPosition(0, 570),
+  y: randoPosition(0, 570),
+  color: colorRandon(),
+};
+
+const drawFood = () => {
+  const { x, y, color } = food;
+  ctx.fillStyle = color; //cor da comida
+  ctx.shadowColor = color; //cor da sombra
+  ctx.shadowBlur = 50;
+
+  ctx.fillRect(x, y, size, size); //coordenadas da comida
+  ctx.shadowBlur = 0;
+};
 
 //desenhando a cobrinha
 const drawSnake = () => {
@@ -60,10 +100,11 @@ const moveSnake = () => {
 
 //Função principal que faz o jogo rodar
 const gameLoop = () => {
-  clearInterval(loopId);
+  clearTimeout(loopId);
 
   ctx.clearRect(0, 0, 600, 600); //apagar o quadro anterior
   drawGrid();
+  drawFood();
   moveSnake();
   drawSnake();
 
@@ -94,7 +135,6 @@ const drawGrid = () => {
   }
 };
 
-drawGrid();
 gameLoop();
 
 //evento de teclado para jogar
