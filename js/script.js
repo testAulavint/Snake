@@ -34,7 +34,6 @@ const randoPosition = () => {
   return Math.round(number / 30) * 30;
 };
 
-
 //comida da cobra pode ser um objeto porque teremos somente uma por vez
 const food = {
   x: randoPosition(0, 570),
@@ -97,6 +96,7 @@ const moveSnake = () => {
   snake.shift();
 };
 
+//detequitar que a cobra adiquiriu o alimento
 const checkEat = () => {
   const head = snake[snake.length - 1];
   if (head.x == food.x && head.y == food.y) {
@@ -120,6 +120,25 @@ const checkEat = () => {
   }
 };
 
+//checar colisoes com ela mesma e com as bordas
+const checkCollision = () => {
+  const head = snake[snake.length - 1]; //a cabeça da cobra (último elemento do array)
+  const nackIndex = snake.length - 2; //segundo elemento do corpo da cobra
+  const limit = canvas.width - size; //tamanho limite da largura do canvas
+
+  const wallCollision = //colisao com a parede
+    head.x < 0 || head.x > limit || head.y < 0 || head.y > limit;
+
+  const selfCollision = snake.find((position, index) => {
+    //colisao com ela mesma
+    return index < nackIndex && position.x == head.x && position.y == head.y;
+  });
+
+  if (selfCollision || wallCollision) {
+    alert("VOCÈ PERDEU");
+  }
+};
+
 //Função principal que faz o jogo rodar
 const gameLoop = () => {
   clearTimeout(loopId);
@@ -129,7 +148,8 @@ const gameLoop = () => {
   drawFood();
   moveSnake();
   drawSnake();
-  checkEat()
+  checkEat();
+  checkCollision();
 
   //criando o valor de loopÍd se caso declarar aqui o clearInterval vai cancelar ele antes de iniciar
   loopId = setTimeout(() => {
