@@ -34,7 +34,6 @@ const randoPosition = () => {
   return Math.round(number / 30) * 30;
 };
 
-h1.innerHTML = colorRandon();
 
 //comida da cobra pode ser um objeto porque teremos somente uma por vez
 const food = {
@@ -98,6 +97,29 @@ const moveSnake = () => {
   snake.shift();
 };
 
+const checkEat = () => {
+  const head = snake[snake.length - 1];
+  if (head.x == food.x && head.y == food.y) {
+    snake.push(head); //adiciona mais um quadrado a conbrinha acrescentando um snake
+    let x = randoPosition(); //cria novo x e novo y
+    let y = randoPosition();
+
+    while (
+      //estrutura que gera um lugar aleatorio para o Food qque nao seja a propria cobrinha
+      snake.find((position) => {
+        position.x == x && position.y == y;
+      })
+    ) {
+      x = randoPosition(); // se o while ser true faz novos x e y
+      y = randoPosition();
+    }
+
+    food.x = x; // entrega os novos valçores de x e y do food
+    food.y = y;
+    food.color = colorRandon(); // cor continua randon
+  }
+};
+
 //Função principal que faz o jogo rodar
 const gameLoop = () => {
   clearTimeout(loopId);
@@ -107,6 +129,7 @@ const gameLoop = () => {
   drawFood();
   moveSnake();
   drawSnake();
+  checkEat()
 
   //criando o valor de loopÍd se caso declarar aqui o clearInterval vai cancelar ele antes de iniciar
   loopId = setTimeout(() => {
