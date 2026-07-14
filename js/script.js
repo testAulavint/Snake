@@ -154,7 +154,7 @@ const gameLoop = () => {
   //criando o valor de loopÍd se caso declarar aqui o clearInterval vai cancelar ele antes de iniciar
   loopId = setTimeout(() => {
     gameLoop();
-  }, 70);
+  }, 200);
 };
 
 //Desenhar um grid
