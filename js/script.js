@@ -1,6 +1,16 @@
 const canvas = document.querySelector("canvas");
 
+const score = document.querySelector(".score--value");
+const finalScore = document.querySelector(".final-score > span");
+const menu = document.querySelector(".menu-screen");
+const btn = document.querySelector(".btn-play");
+
 const h1 = document.querySelector("h1");
+
+//incrementar o score sempre que a comida for comida
+const scoreAtt = () => {
+  return (score.innerText = parseInt(score.innerText) + 10);
+};
 
 //adicionando contexto ao canvas
 const ctx = canvas.getContext("2d");
@@ -8,9 +18,10 @@ const ctx = canvas.getContext("2d");
 //definir tamnho fixo dos quadrados
 const size = 30;
 
+const initialPosition = { x: 0, y: 0 };
 //cobra dentro do array armazenaremos os quadrados da cobra
 //cada posição será um objeto porque salvaremos a posição de x, y
-const snake = [{ x: 0, y: 0 }];
+let snake = [initialPosition];
 
 //armazenar direção que a cobra esta indo
 let direction, loopId;
@@ -101,6 +112,7 @@ const checkEat = () => {
   const head = snake[snake.length - 1];
   if (head.x == food.x && head.y == food.y) {
     snake.push(head); //adiciona mais um quadrado a conbrinha acrescentando um snake
+    scoreAtt();
     let x = randoPosition(); //cria novo x e novo y
     let y = randoPosition();
 
@@ -126,16 +138,17 @@ const checkCollision = () => {
   const nackIndex = snake.length - 2; //segundo elemento do corpo da cobra
   const limit = canvas.width - size; //tamanho limite da largura do canvas
 
-  const wallCollision = //colisao com a parede
+  //colisao com a parede
+  const wallCollision =
     head.x < 0 || head.x > limit || head.y < 0 || head.y > limit;
 
+  //colisao com ela mesma
   const selfCollision = snake.find((position, index) => {
-    //colisao com ela mesma
     return index < nackIndex && position.x == head.x && position.y == head.y;
   });
 
   if (selfCollision || wallCollision) {
-    alert("VOCÈ PERDEU");
+    GameOver();
   }
 };
 
@@ -163,12 +176,11 @@ const drawGrid = () => {
 
   ctx.strokeStyle = "#191919"; //estilo da linha (cor)
 
+  //for para preencher o grid de froma automica
   for (let i = 30; i < canvas.width; i += 30) {
     ctx.beginPath(); //começar um novo caminho a partir de top X
-    //for para preencher o grid de froma automica
     ctx.lineTo(i, 0); //começo da linha coordendas dadas em x,y
     ctx.lineTo(i, 600); //final da linha x,y
-
     ctx.stroke(); // metodo para desenhar em si
 
     ctx.beginPath();
@@ -177,8 +189,6 @@ const drawGrid = () => {
     ctx.stroke();
   }
 };
-
-gameLoop();
 
 //evento de teclado para jogar
 document.addEventListener("keydown", ({ key }) => {
@@ -198,3 +208,20 @@ document.addEventListener("keydown", ({ key }) => {
     direction = "up";
   }
 });
+
+const GameOver = () => {
+  direction = undefined;
+  menu.style.display = "flex";
+  finalScore.innerText = score.innerText;
+  canvas.style.filter = "blur(4px)";
+};
+
+btn.addEventListener("click", () => {
+  score.innerText = "00";
+  canvas.style.filter = "none";
+  menu.style.display = "none";
+
+  snake = [initialPosition];
+});
+
+gameLoop();
